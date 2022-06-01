@@ -85,8 +85,8 @@ std::string UnpackSoultrapperName(uint8 input[]);
 std::string escape(std::string const& s);
 
 std::vector<std::string> split(std::string const& s, std::string const& delimiter);
-std::string trim(const std::string& str, const std::string& whitespace = " \t");
-look_t stringToLook(std::string str);
+std::string              trim(const std::string& str, const std::string& whitespace = " \t");
+look_t                   stringToLook(std::string str);
 
 // Float tools
 // https://stackoverflow.com/a/253874

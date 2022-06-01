@@ -36,7 +36,8 @@
 #include <concurrentqueue.h>
 
 moodycamel::ConcurrentQueue<std::function<void(SqlConnection*)>> asyncQueue;
-std::atomic<bool> asyncRunning;
+
+std::atomic<bool>            asyncRunning;
 std::unique_ptr<std::thread> asyncThread;
 
 void AsyncThreadBody(const char* user, const char* passwd, const char* host, uint16 port, const char* db)
@@ -118,7 +119,7 @@ SqlConnection::SqlConnection(const char* user, const char* passwd, const char* h
     if (!asyncThread)
     {
         asyncRunning = true;
-        asyncThread = std::make_unique<std::thread>(
+        asyncThread  = std::make_unique<std::thread>(
             AsyncThreadBody, m_User, m_Passwd, m_Host, m_Port, m_Db);
     }
 }

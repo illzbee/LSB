@@ -205,6 +205,7 @@ private:
     uint32 m_LastPing;
 
     void InitPreparedStatements();
+
     std::unordered_map<std::string, std::shared_ptr<SqlPreparedStatement>> m_PreparedStatements;
 };
 #endif // _COMMON_SQL_H
