@@ -21,8 +21,6 @@
 
 #include "mobentity.h"
 
-#include "common/timer.h"
-#include "common/utils.h"
 #include "../ai/ai_container.h"
 #include "../ai/controllers/mob_controller.h"
 #include "../ai/helpers/pathfind.h"
@@ -50,6 +48,8 @@
 #include "../utils/mobutils.h"
 #include "../utils/petutils.h"
 #include "../weapon_skill.h"
+#include "common/timer.h"
+#include "common/utils.h"
 #include <cstring>
 
 CMobEntity::CMobEntity()
@@ -753,7 +753,7 @@ void CMobEntity::OnMobSkillFinished(CMobSkillState& state, action_t& action)
         }
         else
         {
-            target.reaction = REACTION::HIT;
+            target.reaction   = REACTION::HIT;
             target.speceffect = SPECEFFECT::HIT;
         }
 
@@ -821,7 +821,9 @@ void CMobEntity::DistributeRewards()
             m_UsedSkillIds.clear();
 
             // RoE Mob kill event for all party members
-            PChar->ForAlliance([this, PChar](CBattleEntity* PMember) {
+            // clang-format off
+            PChar->ForAlliance([this, PChar](CBattleEntity* PMember)
+            {
                 if (PMember->getZone() == PChar->getZone())
                 {
                     RoeDatagramList datagrams;
@@ -830,6 +832,7 @@ void CMobEntity::DistributeRewards()
                     roeutils::event(ROE_MOBKILL, (CCharEntity*)PMember, datagrams);
                 }
             });
+            // clang-format on
 
             if (m_giveExp && !PChar->StatusEffectContainer->HasStatusEffect(EFFECT_BATTLEFIELD))
             {
@@ -898,8 +901,8 @@ void CMobEntity::DropItems(CCharEntity* PChar)
     // Apply m_DropListModifications changes to DropList
     for (auto& entry : m_DropListModifications)
     {
-        uint16 itemID = entry.first;
-        uint16 dropRate = entry.second.first;
+        uint16    itemID   = entry.first;
+        uint16    dropRate = entry.second.first;
         DROP_TYPE dropType = static_cast<DROP_TYPE>(entry.second.second);
 
         if (dropType == DROP_NORMAL)
@@ -1228,7 +1231,9 @@ void CMobEntity::DropItems(CCharEntity* PChar)
             }
         }
         uint8 crystalRolls = 0;
-        PChar->ForParty([this, &crystalRolls, &effect](CBattleEntity* PMember) {
+        // clang-format off
+        PChar->ForParty([this, &crystalRolls, &effect](CBattleEntity* PMember)
+        {
             switch (effect)
             {
                 case 1:
@@ -1256,6 +1261,8 @@ void CMobEntity::DropItems(CCharEntity* PChar)
                     break;
             }
         });
+        // clang-forman on
+
         for (uint8 i = 0; i < crystalRolls; i++)
         {
             if (xirand::GetRandomNumber(100) < 20 && AddItemToPool(4095 + m_Element, ++dropCount))
@@ -1307,13 +1314,17 @@ void CMobEntity::OnEngage(CAttackState& state)
         }
         if (PTarget->objtype == TYPE_PC)
         {
-            ((CCharEntity*)PTarget)->ForAlliance([this, PTarget, range](CBattleEntity* PMember) {
+            // clang-format off
+            ((CCharEntity*)PTarget)->ForAlliance([this, PTarget, range](CBattleEntity* PMember)
+            {
                 auto currentDistance = distance(PMember->loc.p, PTarget->loc.p);
                 if (currentDistance < range)
                 {
                     this->PEnmityContainer->AddBaseEnmity(PMember);
                 }
             });
+            // clang-format on
+
             this->PEnmityContainer->UpdateEnmity((PPet ? (CBattleEntity*)PPet : (CBattleEntity*)PTarget), 0, 1); // Set VE so target doesn't change
         }
     }

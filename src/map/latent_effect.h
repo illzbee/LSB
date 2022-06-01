@@ -80,14 +80,14 @@ enum class LATENT : uint16
     JOB_LEVEL_BELOW       = 50, // PARAM: level
     JOB_LEVEL_ABOVE       = 51, // PARAM: level
     WEATHER_ELEMENT       = 52, // PARAM: 0: NONE, 1: FIRE, 2: ICE, 3: WIND 4: EARTH, 5: THUNDER, 6: WATER, 7: LIGHT, 8: DARK
-    NATION_CONTROL   = 53, // checks if player region is under nation's control - PARAM: 0: Under own nation's control, 1: Outside own nation's control
-    ZONE_HOME_NATION = 54, // in zone and citizen of nation (aketons)
-    MP_OVER          = 55, // mp greater than # - PARAM: MP #
-    WEAPON_DRAWN_MP_OVER = 56, // while weapon is drawn and mp greater than # - PARAM: MP #
-    ELEVEN_ROLL_ACTIVE   = 57, // corsair roll of 11 active
-    IN_ASSAULT           = 58, // is in an Instance battle in a TOAU zone
-    VS_ECOSYSTEM         = 59, // Vs. Specific Ecosystem ID (e.g. Vs. Birds: Accuracy+3)
-    VS_FAMILY            = 60, // Vs. Specific Family ID (e.g. Vs. Apkallu: Accuracy+3)
+    NATION_CONTROL        = 53, // checks if player region is under nation's control - PARAM: 0: Under own nation's control, 1: Outside own nation's control
+    ZONE_HOME_NATION      = 54, // in zone and citizen of nation (aketons)
+    MP_OVER               = 55, // mp greater than # - PARAM: MP #
+    WEAPON_DRAWN_MP_OVER  = 56, // while weapon is drawn and mp greater than # - PARAM: MP #
+    ELEVEN_ROLL_ACTIVE    = 57, // corsair roll of 11 active
+    IN_ASSAULT            = 58, // is in an Instance battle in a TOAU zone
+    VS_ECOSYSTEM          = 59, // Vs. Specific Ecosystem ID (e.g. Vs. Birds: Accuracy+3)
+    VS_FAMILY             = 60, // Vs. Specific Family ID (e.g. Vs. Apkallu: Accuracy+3)
 };
 
 #define MAX_LATENTEFFECTID 61
@@ -124,7 +124,7 @@ public:
     bool Deactivate();
 
     CLatentEffect(CBattleEntity* owner, LATENT conditionsId, uint16 conditionsValue, uint8 slot, Mod modValue, int16 modPower);
-    CLatentEffect(const CLatentEffect&) = delete;
+    CLatentEffect(const CLatentEffect&)            = delete;
     CLatentEffect& operator=(const CLatentEffect&) = delete;
     CLatentEffect(CLatentEffect&& o) noexcept
     {

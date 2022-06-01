@@ -1336,13 +1336,16 @@ void CBattleEntity::Die()
     TracyZoneScoped;
     if (CBaseEntity* PKiller = GetEntity(m_OwnerID.targid))
     {
-        static_cast<CBattleEntity*>(PKiller)->ForAlliance([this](CBattleEntity* PMember) {
+        // clang-format off
+        static_cast<CBattleEntity*>(PKiller)->ForAlliance([this](CBattleEntity* PMember)
+        {
             CCharEntity* member = static_cast<CCharEntity*>(PMember);
             if (member->PClaimedMob == this)
             {
                 member->PClaimedMob = nullptr;
             }
         });
+        // clang-format on
         PAI->EventHandler.triggerListener("DEATH", CLuaBaseEntity(this), CLuaBaseEntity(PKiller));
     }
     else
@@ -1687,7 +1690,7 @@ bool CBattleEntity::OnAttack(CAttackState& state, action_t& action)
             if (!(attackRound.GetSATAOccured()) && battleutils::IsAbsorbByShadow(PTarget))
             {
                 actionTarget.messageID = MSGBASIC_SHADOW_ABSORB;
-                actionTarget.param = 1;
+                actionTarget.param     = 1;
                 actionTarget.reaction  = REACTION::EVADE;
                 attack.SetEvaded(true);
             }
@@ -1718,8 +1721,8 @@ bool CBattleEntity::OnAttack(CAttackState& state, action_t& action)
                     {
                         actionTarget.spikesParam   = 1;
                         actionTarget.spikesMessage = MSGBASIC_COUNTER_ABS_BY_SHADOW;
-                        actionTarget.messageID = 0;
-                        actionTarget.param = 0;
+                        actionTarget.messageID     = 0;
+                        actionTarget.param         = 0;
                     }
                     else
                     {

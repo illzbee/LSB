@@ -26,12 +26,12 @@
 
 #include "../ai/ai_container.h"
 
-#include "../lua/luautils.h"
 #include "../campaign_system.h"
 #include "../conquest_system.h"
 #include "../entities/mobentity.h"
 #include "../entities/npcentity.h"
 #include "../items/item_weapon.h"
+#include "../lua/luautils.h"
 #include "../map.h"
 #include "../mob_modifier.h"
 #include "../mob_spell_list.h"
@@ -214,7 +214,9 @@ namespace zoneutils
 
         for (auto PZone : g_PZoneList)
         {
-            PZone.second->ForEachChar([primary, ternary, &PPrimary, &PSecondary, &PTernary](CCharEntity* PChar) {
+            // clang-format off
+            PZone.second->ForEachChar([primary, ternary, &PPrimary, &PSecondary, &PTernary](CCharEntity* PChar)
+            {
                 if (!PPrimary)
                 {
                     if (PChar->id == primary)
@@ -231,6 +233,8 @@ namespace zoneutils
                     }
                 }
             });
+            // clang-format on
+
             if (PPrimary)
             {
                 return PPrimary;
@@ -298,7 +302,7 @@ namespace zoneutils
                     PNpc->targid     = NpcID & 0xFFF;
                     PNpc->id         = NpcID;
 
-                    PNpc->name.insert(0, (const char*)sql->GetData(2)); // Internal name
+                    PNpc->name.insert(0, (const char*)sql->GetData(2));       // Internal name
                     PNpc->packetName.insert(0, (const char*)sql->GetData(3)); // Name sent to the client (when applicable)
 
                     PNpc->loc.p.rotation = (uint8)sql->GetIntData(4);
@@ -309,7 +313,7 @@ namespace zoneutils
 
                     PNpc->m_TargID = sql->GetUIntData(8) >> 16;
 
-                    PNpc->speed    = (uint8)sql->GetIntData(9); // Overwrites baseentity.cpp's defined speed
+                    PNpc->speed    = (uint8)sql->GetIntData(9);  // Overwrites baseentity.cpp's defined speed
                     PNpc->speedsub = (uint8)sql->GetIntData(10); // Overwrites baseentity.cpp's defined speedsub
 
                     PNpc->animation    = (uint8)sql->GetIntData(11);
@@ -333,7 +337,15 @@ namespace zoneutils
         }
 
         // handle npc spawn functions after they're all done loading
-        ForEachZone([](CZone* PZone) { PZone->ForEachNpc([](CNpcEntity* PNpc) { luautils::OnNpcSpawn(PNpc); }); });
+        // clang-format off
+        ForEachZone([](CZone* PZone)
+        {
+            PZone->ForEachNpc([](CNpcEntity* PNpc)
+            {
+                luautils::OnNpcSpawn(PNpc);
+            });
+        });
+        // clang-format on
     }
 
     /************************************************************************
@@ -449,9 +461,9 @@ namespace zoneutils
                     PMob->setModifier(Mod::LIGHT_SDT, (int16)sql->GetFloatData(48));   // Modifier 60, base 10000 stored as signed integer. Positives signify less damage.
                     PMob->setModifier(Mod::DARK_SDT, (int16)sql->GetFloatData(49));    // Modifier 61, base 10000 stored as signed integer. Positives signify less damage.
 
-                    PMob->setModifier(Mod::FIRE_RES, (int16)(sql->GetIntData(50)));    // These are stored as signed integers which
-                    PMob->setModifier(Mod::ICE_RES, (int16)(sql->GetIntData(51)));     // is directly the modifier starting value.
-                    PMob->setModifier(Mod::WIND_RES, (int16)(sql->GetIntData(52)));    // Positives signify increased resist chance.
+                    PMob->setModifier(Mod::FIRE_RES, (int16)(sql->GetIntData(50))); // These are stored as signed integers which
+                    PMob->setModifier(Mod::ICE_RES, (int16)(sql->GetIntData(51)));  // is directly the modifier starting value.
+                    PMob->setModifier(Mod::WIND_RES, (int16)(sql->GetIntData(52))); // Positives signify increased resist chance.
                     PMob->setModifier(Mod::EARTH_RES, (int16)(sql->GetIntData(53)));
                     PMob->setModifier(Mod::THUNDER_RES, (int16)(sql->GetIntData(54)));
                     PMob->setModifier(Mod::WATER_RES, (int16)(sql->GetIntData(55)));
@@ -490,7 +502,7 @@ namespace zoneutils
 
                     // TODO: Remove me
                     // Check if we should be looking up scripts for this mob
-                    //PMob->m_HasSpellScript = (uint8)sql->GetIntData(65);
+                    // PMob->m_HasSpellScript = (uint8)sql->GetIntData(65);
 
                     PMob->m_SpellListContainer = mobSpellList::GetMobSpellList(sql->GetIntData(66));
 
