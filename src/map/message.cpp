@@ -306,7 +306,7 @@ namespace message
                             if (PInviter->PParty && PInviter->PParty->GetLeader() == PInviter)
                             {
                                 ret = sql->Query("SELECT * FROM accounts_parties WHERE partyid <> 0 AND \
-                                                       															charid = %u;",
+                                                                                                                charid = %u;",
                                                  inviteeId);
                                 if (ret != SQL_ERROR && sql->NumRows() == 0)
                                 {
