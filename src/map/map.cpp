@@ -295,7 +295,13 @@ int32 do_init(int32 argc, char** argv)
     ShowStatus("The map-server is ready to work!");
     ShowMessage("=======================================================================");
 
+    // clang-format off
     gConsoleService = std::make_unique<ConsoleService>();
+    gConsoleService->RegisterCommand("crash", "Force a native crash.", []()
+    {
+        crash();
+    });
+    // clang-format on
 
     return 0;
 }
