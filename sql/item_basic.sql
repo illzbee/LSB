@@ -6286,7 +6286,7 @@ INSERT INTO `item_basic` VALUES (8484,0,'loudspeaker_ii','loudspeaker_ii',1,4,61
 INSERT INTO `item_basic` VALUES (8485,0,'tactical_processor','tactical_processor',1,4,61,0,675);
 INSERT INTO `item_basic` VALUES (8486,0,'tranquilizer','tranquilizer',1,4,61,0,412);
 INSERT INTO `item_basic` VALUES (8487,0,'ice_maker','ice_maker',1,4,61,0,123);
-INSERT INTO `item_basic` VALUES (8488,0,'power_cooler','power_cooler',1,4,610,1360);
+INSERT INTO `item_basic` VALUES (8488,0,'power_cooler','power_cooler',1,4,61,0,1360);
 INSERT INTO `item_basic` VALUES (8489,0,'loudspeaker_iii','loudspeaker_iii',1,4,61,0,553);
 INSERT INTO `item_basic` VALUES (8490,0,'tranquilizer_ii','tranquilizer_ii',1,4,61,0,810);
 INSERT INTO `item_basic` VALUES (8491,0,'amplifier','amplifier',1,4,61,0,691);
