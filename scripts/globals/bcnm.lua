@@ -239,7 +239,7 @@ local battlefields =
         { 1,    1, 1131},   -- Tails of Woe (BS40)
         { 2,    2, 1130},   -- Dismemberment Brigade (BS60)
         { 3,    3,    0},   -- The Secret Weapon (Sandy 7-2)
-     -- { 4,    4, 1177},   -- Hostile Herbivores (BS50) -- TODO: mobs need knockback on melee attacks
+        { 4,    4, 1177},   -- Hostile Herbivores (BS50)
         { 5,    5, 1426},   -- Shattering Stars (WAR LB5)
         { 6,    6, 1429},   -- Shattering Stars (BLM LB5)
         { 7,    7, 1436},   -- Shattering Stars (RNG LB5)
@@ -547,6 +547,7 @@ local function checkReqs(player, npc, bfid, registrant)
     local cop      = player:getCurrentMission(xi.mission.log_id.COP)
     local toau     = player:getCurrentMission(xi.mission.log_id.TOAU)
     local wotg     = player:getCurrentMission(xi.mission.log_id.WOTG)
+    local acp      = player:getCurrentMission(xi.mission.log_id.ACP)
     local asa      = player:getCurrentMission(xi.mission.log_id.ASA)
     local natStat  = player:getMissionStatus(player:getNation())
     local rozStat  = player:getMissionStatus(xi.mission.log_id.ZILART)
@@ -595,7 +596,7 @@ local function checkReqs(player, npc, bfid, registrant)
         [ 196] = function() return ( mjob == xi.job.DRG and mlvl >= 66                                                                                                     ) end, -- Quest: Shattering Stars (DRG LB5)
         [ 224] = function() return ( player:hasKeyItem(xi.ki.MOON_BAUBLE)                                                                                                  ) end, -- Quest: The Moonlit Path
         [ 225] = function() return ( windy == mi.windurst.MOON_READING and natStat == 2                                                                                    ) end, -- Windy 9-2: Moon Reading
-        [ 256] = function() return ( roz == mi.zilart.RETURN_TO_DELKFUTTS_TOWER and rozStat == 3                                                                           ) end, -- ZM8: Return to Delkfutt's Tower
+        [ 256] = function() return ( roz == mi.zilart.RETURN_TO_DELKFUTTS_TOWER and rozStat == 2                                                                           ) end, -- ZM8: Return to Delkfutt's Tower
         [ 288] = function() return ( roz == mi.zilart.ARK_ANGELS and rozStat == 1 and npcid == getEntranceOffset(0) and not player:hasKeyItem(xi.ki.SHARD_OF_APATHY)       ) end, -- ZM14: Ark Angels (Hume)
         [ 289] = function() return ( roz == mi.zilart.ARK_ANGELS and rozStat == 1 and npcid == getEntranceOffset(1) and not player:hasKeyItem(xi.ki.SHARD_OF_COWARDICE)    ) end, -- ZM14: Ark Angels (Tarutaru)
         [ 290] = function() return ( roz == mi.zilart.ARK_ANGELS and rozStat == 1 and npcid == getEntranceOffset(2) and not player:hasKeyItem(xi.ki.SHARD_OF_ENVY)         ) end, -- ZM14: Ark Angels (Mithra)
@@ -621,6 +622,10 @@ local function checkReqs(player, npc, bfid, registrant)
         [ 518] = function() return ( mjob == xi.job.DRK and mlvl >= 66                                                                                                     ) end, -- Quest: Shattering Stars (DRK LB5)
         [ 519] = function() return ( mjob == xi.job.BRD and mlvl >= 66                                                                                                     ) end, -- Quest: Shattering Stars (BRD LB5)
         [ 530] = function() return ( mjob == xi.job.DNC and mlvl >= 66                                                                                                     ) end, -- Quest: A Furious Finale (DNC LB5)
+
+        -- Temp disabled pending BCNM mob fixes
+        -- [ 532] = function() return (acp >= mi.acp.THOSE_WHO_LURK_IN_SHADOWS_III and player:hasKeyItem(xi.ki.MARK_OF_SEED)                                                  ) end, -- Those Who Lurk in Shadows (ACP7)
+
         [ 533] = function() return ( player:hasKeyItem(xi.ki.SOUL_GEM_CLASP)                                                                                               ) end, -- Quest: Beyond Infinity
         [ 544] = function() return ( player:hasKeyItem(xi.ki.TUNING_FORK_OF_FIRE)                                                                                          ) end, -- Quest: Trial by Fire
         [ 545] = function() return ( mjob == xi.job.SMN and mlvl >= 20                                                                                                     ) end, -- Quest: Trial-size Trial by Fire
@@ -945,11 +950,27 @@ local function getItemById(player, bfid)
     return 0
 end
 
+local function rejectLevelSyncedParty(player, npc)
+    for _, member in pairs(player:getAlliance()) do
+        if member:isLevelSync() then
+            local zoneId = player:getZoneID()
+            local ID = zones[zoneId]
+            -- Your party is unable to participate because certain members' levels are restricted
+            player:messageText(npc, ID.text.MEMBERS_LEVELS_ARE_RESTRICTED, false)
+            return true
+        end
+    end
+    return false
+end
 -----------------------------------
 -- onTrade Action
 -----------------------------------
 
 xi.bcnm.onTrade = function(player, npc, trade, onUpdate)
+    if rejectLevelSyncedParty(player, npc) then -- player's party has level sync, abort.
+        return false
+    end
+
     -- Validate trade
     local itemId
 
@@ -1019,6 +1040,11 @@ end
 -- onTrigger Action
 -----------------------------------
 xi.bcnm.onTrigger = function(player, npc)
+    -- Cannot enter if anyone in party is level/master sync'd
+    if rejectLevelSyncedParty(player, npc) then
+        return false
+    end
+
     -- Player has battlefield status effect. That means a battlefield is open OR the player is inside a battlefield.
     if player:hasStatusEffect(xi.effect.BATTLEFIELD) then
         -- Player is inside battlefield. Attempting to leave.
