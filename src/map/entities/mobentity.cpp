@@ -28,6 +28,7 @@
 #include "../ai/states/attack_state.h"
 #include "../ai/states/mobskill_state.h"
 #include "../ai/states/weaponskill_state.h"
+#include "../battlefield.h"
 #include "../conquest_system.h"
 #include "../enmity_container.h"
 #include "../entities/charentity.h"
@@ -283,7 +284,7 @@ bool CMobEntity::CanRoamHome()
 
 bool CMobEntity::CanRoam()
 {
-    return !(m_roamFlags & ROAMFLAG_EVENT) && PMaster == nullptr && (speed > 0 || (m_roamFlags & ROAMFLAG_WORM)) && getMobMod(MOBMOD_NO_MOVE) == 0;
+    return !(m_roamFlags & ROAMFLAG_SCRIPTED) && PMaster == nullptr && (speed > 0 || (m_roamFlags & ROAMFLAG_WORM)) && getMobMod(MOBMOD_NO_MOVE) == 0;
 }
 
 void CMobEntity::TapDeaggroTime()
@@ -1394,6 +1395,12 @@ void CMobEntity::OnDespawn(CDespawnState& /*unused*/)
 void CMobEntity::Die()
 {
     TracyZoneScoped;
+
+    if (PBattlefield != nullptr)
+    {
+        PBattlefield->handleDeath(this);
+    }
+
     m_THLvl = PEnmityContainer->GetHighestTH();
     PEnmityContainer->Clear();
     PAI->ClearStateStack();

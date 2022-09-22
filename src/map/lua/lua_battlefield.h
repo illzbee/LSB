@@ -50,7 +50,10 @@ public:
     uint32   getFightTick();
     uint32   getWipeTime();
     uint32   getFightTime();
+    uint32   getMaxParticipants();
+    uint32   getPlayerCount();
     auto     getPlayers() -> sol::table;
+    auto     getPlayersAndTrusts() -> sol::table;
     auto     getMobs(bool required, bool adds) -> sol::table;
     auto     getNPCs() -> sol::table;
     auto     getAllies() -> sol::table;
@@ -72,6 +75,7 @@ public:
     bool cleanup(bool cleanup);
     void win();
     void lose();
+    void addGroups(sol::table groups);
 
     static void Register();
 };
